@@ -101,10 +101,24 @@ def locate_nearby_stars(latitude, longitude, time, input_altitude, input_azimuth
     for hip_id, alt, az, vmag, sep in nearest_stars[:5]:
         print(f"  Star HIP {hip_id}: Altitude={alt:.2f}°, Azimuth={az:.2f}°, Vmag={vmag}, Separation={sep:.2f}")
 
+        webbrowser.open(file_path)
 def create_map(file_path='map.html'):
     if os.path.exists(file_path):
         print(f"{file_path} already exists. Opening in default browser.")
-        webbrowser.open(file_path)
+        try:
+            # Attempt to open the map in the default browser
+            webbrowser.open(file_path)
+        except webbrowser.Error:
+            print("No default browser found, opening in Firefox...")
+            # Check for Linux platform
+            if platform.system() == "Linux":
+                firefox_path = "/usr/bin/firefox"
+                if os.path.exists(firefox_path):
+                    os.system(f"{firefox_path} {file_path}")
+                else:
+                    print("Firefox is not installed or not found at expected location.")
+            else:
+                print("Default browser could not be detected on this platform. Please ensure it's properly configured.")
     else:
         # Create a map centered at a specific location
         m = folium.Map(location=[0, 0], zoom_start=2)
@@ -125,7 +139,21 @@ def create_map(file_path='map.html'):
         # Save the map to an HTML file
         m.save(file_path)
         print(f"Map has been created and saved to {file_path}")
-        webbrowser.open(file_path)
+        
+        try:
+            # Attempt to open the map in the default browser
+            webbrowser.open(file_path)
+        except webbrowser.Error:
+            print("No default browser found, opening in Firefox...")
+            # Check for Linux platform
+            if platform.system() == "Linux":
+                firefox_path = "/usr/bin/firefox"
+                if os.path.exists(firefox_path):
+                    os.system(f"{firefox_path} {file_path}")
+                else:
+                    print("Firefox is not installed or not found at expected location.")
+            else:
+                print("Default browser could not be detected on this platform. Please ensure it's properly configured.")
 
 def research_star(hip_id):
     # Query Simbad for detailed information about the star
@@ -197,7 +225,7 @@ def research_star(hip_id):
     except KeyError:
         print("  Other IDs: Not available")
 
-intro = """
+intro = r"""
 
  .    '                   .  "   '
             .  .  .                 '      '
@@ -205,19 +233,20 @@ intro = """
                                      '     '
   .    '      _______________
           ==c(___(o(______(_()
-                  \=\\
+                   |=\\
                    )=\\
                    //|\\
                   //|| \\
                  // ||  \\
                 //  ||   \\
                //         \\
- _____ _               _        _                ____                      
-|_   _| |__   ___     / \   ___| |_ _ __ ___    / ___|___  _ __ ___  _ __  
-  | | | '_ \ / _ \   / _ \ / __| __| '__/ _ \  | |   / _ \| '_ ` _ \| '_ \ 
-  | | | | | |  __/  / ___ \\__ \ |_| | | (_) | | |__| (_) | | | | | | |_) |
-  |_| |_| |_|\___| /_/   \_\___/\__|_|  \___/   \____\___/|_| |_| |_| .__/ 
-                                                                    |_|    
+ _____ _               _         _                ____                      
+|_   _| |__   ___     / \    ___| |_ _ __ ___    / ___|___  _ __ ___  _ __  
+  | | | '_ \ / _ \   / _ \  / __| __| '__/ _ \  | |   / _ \| '_ ` _ \| '_ \ 
+  | | | | | |  __/  / ___ \ \__ \ |_| | | (_) | | |__| (_) | | | | | | |_) |
+  |_| |_| |_|\___| /_/   \_\ \___/\__|_| \___/   \____\___/|_| |_| |_| .__/ 
+                                                                     |_|    
+    By Juani Vazquez
 """
 
 print(intro)
@@ -251,7 +280,32 @@ while True:
     elif command == "research":
         hip_id = input("Enter HIP ID: ")
         research_star(hip_id)
-    
+   
+    elif command == "help":
+        print("""
+        Available Commands:
+        
+        "location"          : Generate an interactive map and display geographic coordinates.
+        
+        "sky"               : Display a list of observable celestial objects (Sun, Moon, planets, and stars) 
+                               from a specific location and time. The location is defined by latitude and longitude, 
+                               and the time is provided in UTC.
+
+        "locate"            : Locate celestial objects near a specific altitude and azimuth in the sky, based 
+                               on a given location (latitude, longitude) and time. The result includes stars 
+                               from the Hipparcos catalog, filtered by a visual magnitude limit.
+
+        "research"          : Retrieve detailed astronomical information about a star using its HIP ID. 
+                               This command queries the Simbad database for data on the star's spectral type, 
+                               distance, magnitude, proper motion, and other key characteristics.
+
+        General Notes:
+        - All commands require input in the specified format (e.g., "latitude, longitude" for location-based commands).
+        - The "sky" and "locate" commands also require a valid UTC time.
+        - The "research" command needs a valid HIP ID from the Hipparcos catalog to function.
+
+        For more detailed usage or additional help, refer to the documentation or contact the developer.
+        """)
     else:
         print("Bye")
         break
