@@ -8,6 +8,7 @@ import os
 import webbrowser
 from astroquery.vizier import Vizier
 from astroquery.simbad import Simbad
+import matplotlib.pyplot as plt
 
 def get_observable_objects(latitude, longitude, time, magnitude_limit=5):
     # Define observer location
@@ -63,7 +64,12 @@ def get_observable_objects(latitude, longitude, time, magnitude_limit=5):
 
     return observable
 
-def locate_nearby_stars(latitude, longitude, time, input_altitude, input_azimuth, magnitude_limit=5):
+def on_key(event):
+    if event.key == 'escape':
+        plt.close()
+
+
+def locate_nearby_stars(latitude, longitude, time, input_altitude, input_azimuth, magnitude_limit=5, plot=False):
     # Define observer location
     location = EarthLocation(lat=latitude*u.deg, lon=longitude*u.deg)
 
@@ -101,7 +107,31 @@ def locate_nearby_stars(latitude, longitude, time, input_altitude, input_azimuth
     for hip_id, alt, az, vmag, sep in nearest_stars[:5]:
         print(f"  Star HIP {hip_id}: Altitude={alt:.2f}°, Azimuth={az:.2f}°, Vmag={vmag}, Separation={sep:.2f}")
 
-        webbrowser.open(file_path)
+    if plot:
+        plt.figure(figsize=(10,6))
+        
+        top_5_stars = nearest_stars[:5]
+
+        top_5_az = [star[2] for star in top_5_stars]
+        top_5_alt = [star[1] for star in top_5_stars]
+        top_5_labels = [star[0] for star in top_5_stars]
+
+        plt.scatter(top_5_az,top_5_alt,c="red", label="Nearest Stars", s=100, marker="*", edgecolor="black")
+
+        for az, alt, label in zip(top_5_az,top_5_alt,top_5_labels):
+            plt.text(az, alt, f"HIP {label}", fontsize=9, ha="left", color="black")
+
+        plt.title("Nearby Stars in Alt-Az coordinates")
+        plt.xlabel("Azimuth degrees")
+        plt.ylabel("Altitude degrees")
+        plt.legend()
+        plt.grid(True)
+        plt.gcf().canvas.mpl_connect('key_press_event', on_key)
+
+        plt.show()
+
+    return nearest_stars
+
 def create_map(file_path='map.html'):
     if os.path.exists(file_path):
         print(f"{file_path} already exists. Opening in default browser.")
@@ -267,15 +297,28 @@ while True:
         observable_objects = get_observable_objects(latitude, longitude, time)
 
     elif command == "locate":
-        latitude = float(input("Enter latitude: "))
-        longitude = float(input("Enter longitude: "))
-        time_str = input("Enter time (YYYY-MM-DD HH:MM:SS): ")
+        #latitude = float(input("Enter latitude: "))
+        #longitude = float(input("Enter longitude: "))
+        #time_str = input("Enter time (YYYY-MM-DD HH:MM:SS): ")
+        #time = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
+        
+        #input_altitude = float(input("Enter altitude (degrees): "))
+        #input_azimuth = float(input("Enter azimuth (degrees): "))
+        #plot = input("Plot? (True/False): ")
+        
+        latitude = -58.5
+        longitude = -34.5
+        time_str = "2024-11-26 11:00:00"
         time = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
-        
-        input_altitude = float(input("Enter altitude (degrees): "))
-        input_azimuth = float(input("Enter azimuth (degrees): "))
-        
-        locate_nearby_stars(latitude, longitude, time, input_altitude, input_azimuth)
+        input_altitude = 31.50
+        input_azimuth = 175.63
+        plot = "True"
+
+        if plot == "True":
+            locate_nearby_stars(latitude, longitude, time, input_altitude, input_azimuth, plot=True)
+
+        else:
+            locate_nearby_stars(latitude,longitude,time, input_altitude, input_azimuth)
     
     elif command == "research":
         hip_id = input("Enter HIP ID: ")
