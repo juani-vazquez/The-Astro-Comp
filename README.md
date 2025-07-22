@@ -27,4 +27,37 @@ You can install the required libraries using `pip`:
 
 ```bash
 pip install astropy folium astroquery
+```
+
+## Usage
+
+```bash
+python main.py
+```
+
+## Example Use Cases
+
+- Check what planets or stars are visible right now from your location.
+- Find stars near the position of a telescope or fixed camera.
+- Explore star data for research or educational projects.
+
+## License
+
+This project is licensed under the MIT License
+
+## Contribuiting
+
+Contributions are welcome! Feel free to:
+- Fork the repository.
+- Submit issues for bugs or ideas.
+- Open pull requests to improve features or code.
+
+## Acknowledgements
+
+- Built using Astroquery, Astropy, and Folium.
+- Stellar data provided by the Simbad and Hipparcos catalogs.
+  
+
+
+
 
