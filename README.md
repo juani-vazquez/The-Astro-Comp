@@ -16,7 +16,7 @@
 
 ## Prerequisites
 
-Ensure that the following Python libraries are installed:
+Ensure that the following Python version 3.10.10 and the following libraries are installed:
 
 - `astropy` for astronomical calculations.
 - `folium` for map creation and interactive viewing.
@@ -26,7 +26,7 @@ Ensure that the following Python libraries are installed:
 You can install the required libraries using `pip`:
 
 ```bash
-pip install astropy folium astroquery matplotlib
+pip install astropy==0.4.5 folium astroquery matplotlib
 ```
 
 ## Usage
