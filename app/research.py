@@ -3,7 +3,7 @@ from astroquery.simbad import Simbad
 def research_star(hip_id):
     # Query Simbad for detailed information about the star
     custom_simbad = Simbad()
-    custom_simbad.add_votable_fields('sptype', 'distance', 'flux(V)', 'flux(B)', 'flux(R)', 'flux(I)', 'flux(J)', 'flux(H)', 'flux(K)', 'pmra', 'pmdec', 'plx', 'rv_value', 'rot', 'biblio', 'ids', 'otypes')
+    custom_simbad.add_votable_fields('sptype', 'distance', 'flux(V)', 'flux(B)', 'flux(R)', 'flux(I)', 'flux(J)', 'flux(H)', 'flux(K)', 'pmra', 'pmdec', 'plx', 'rot', 'biblio', 'ids', 'otypes')
 
     result = custom_simbad.query_object(f"HIP {hip_id}")
 
@@ -49,12 +49,7 @@ def research_star(hip_id):
         print(f"  Parallax: {star_info['PLX_VALUE']} mas")
     except KeyError:
         print("  Parallax: Not available")
-    
-    try:
-        print(f"  Radial Velocity: {star_info['RV_VALUE']} km/s")
-    except KeyError:
-        print("  Radial Velocity: Not available")
-    
+ 
     try:
         print(f"  Rotation: {star_info['ROT']} km/s")
     except KeyError:
