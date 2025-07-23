@@ -26,7 +26,7 @@ Ensure that the following Python libraries are installed:
 You can install the required libraries using `pip`:
 
 ```bash
-pip install astropy folium astroquery
+pip install astropy folium astroquery matplotlib
 ```
 
 ## Usage
