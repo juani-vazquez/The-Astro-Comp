@@ -25,7 +25,8 @@ def create_map(file_path='map.html'):
         # Create a map centered at a specific location
         m = folium.Map(location=[0, 0], zoom_start=2)
 
-        # Add a MousePosition plugin to display coordinates on the map
+        # Add a MousePosition plugin to display coordinates on the map (JavaScript 
+        # function for formatting coordinates to 5 decimal places).
         formatter = "function(num) {return L.Util.formatNum(num, 5);};"
         MousePosition(
             position='topright',
